@@ -1,0 +1,29 @@
+<% include partials/header %>
+  <div class="ui grid">
+    <div class="three wide column"></div>
+      <div class="ui card ten wide column">
+        <div class="content">
+          <div class="header">Create New Post</div>
+        </div>
+        <div class="content">
+          <form class="ui form" action="/new-post" method="post">
+            <div class="field">
+              <label>Title</label>
+              <input name="title" placeholder="Title" type="text">
+            </div>
+            <div class="field">
+              <label>Image Url</label>
+              <input name="image" placeholder="http://" type="text">
+            </div>
+            <div class="field">
+                <label for="">Descriptions</label>
+                <textarea name="body" rows="3"></textarea>
+            </div>
+            </div>
+            <button class="ui inverted blue button" type="submit">Simpan</button>
+          </form>
+        </div>
+    </div>
+  </div>
+
+  <% include partials/footer %>
