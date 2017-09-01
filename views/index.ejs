@@ -12,9 +12,8 @@
             <div class="ui medium header"><%= data.title %></div>
             <img class="ui small left floated  image" src="<%= data.image %>">
             <span><i class="time icon"></i><strong><%= data.created.toDateString() %></strong></span>
-            <p><%= data.body.substring(0, 100) %> ...</p><a class="ui inverted small green button" href="/detail/<%= data.id %>">Read More</a>
-            <a class="ui inverted orange button" href="/edit-post/<%= data.id %>">Edit</a>
-            <a class="ui inverted red button" href="/delete-post/<%= data.id %>">Delete</a>
+            <p><%= data.body.substring(0, 150) %></p>
+            <a class="ui inverted small green button" href="/post-detail/<%= data.id %>">Read More</a>
           </div>
         <% }); %>
       </div>

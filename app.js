@@ -32,10 +32,12 @@ app.get('/', function(req, res) {
   });
 });
 
+// get all post
 app.get('/new-post', function(req, res) {
   res.render('create');
 });
 
+// create new post
 app.post('/new-post', function(req, res) {
   var title = req.body.title;
   var image = req.body.image;
@@ -56,7 +58,59 @@ app.post('/new-post', function(req, res) {
   });
 });
 
+// show post
+app.get('/post-detail/:id', function(req,res) {
+  var id = req.params.id;
+  // console.log(id);
+  Blog.findOne({_id: id}, function(err, data) {
+    if (err) {
+      console.log(err);
+    }else{
+      // console.log(data);
+      res.render('show', {blog: data});
+    }
+  });
+});
 
+// get Edit
+app.get('/edit-post/:id', function(req,res) {
+  var id = req.params.id;
+  Blog.findOne({_id: id}, function(err, data) {
+    if (err) {
+      console.log(err);
+    }else{
+      res.render('edit', {blog: data});
+    }
+  });
+});
+
+// update date
+app.post('/edit-post/:id/update', function(req,res) {
+  var id = req.params.id;
+  var title = req.body.title;
+  var image = req.body.image;
+  var body = req.body.body;
+  Blog.findByIdAndUpdate(id, {title: title, image: image, body: body}, function(err, data) {
+    if (err) {
+      console.log(err);
+    }else{
+      // console.log(data);
+      res.redirect('/post-detail/' + req.params.id);
+    }
+  });
+});
+
+// delete data
+app.get('/delete-post/:id', function(req,res) {
+  var id = req.params.id;
+  Blog.deleteOne(id, function(err) {
+    if (err) {
+      console.log(err);
+    }else{
+      res.redirect('/');
+    }
+  })
+});
 
 
 
