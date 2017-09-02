@@ -1,6 +1,7 @@
 var express = require('express'),
     bodyParser = require('body-parser'),
     mongoose = require('mongoose'),
+    expressSanitizer = require('express-sanitizer');
     app = express();
 
 // connection
@@ -11,6 +12,7 @@ mongoose.connect("mongodb://localhost/RESTfulBlog", {
 app.use(express.static("node_modules"));
 app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({extended: true}));
+app.use(expressSanitizer());
 // schema
 var blogSchema = new mongoose.Schema({
   title: String,
@@ -39,14 +41,16 @@ app.get('/new-post', function(req, res) {
 
 // create new post
 app.post('/new-post', function(req, res) {
-  var title = req.body.title;
-  var image = req.body.image;
-  var body = req.body.body;
+  var title = req.sanitize(req.body.title);
+  var image = req.sanitize(req.body.image);
+  var body = req.sanitize(req.body.body);
   var data = {
       title: title,
       image: image,
       body: body
   };
+  // console.log(data);
+  // req.sanitize(data.body);
   // console.log(data);
   Blog.create(data, function(err, data) {
     if (err) {
