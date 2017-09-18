@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>RESTfulBlog</title>
+    <link rel="stylesheet" href="/semantic-ui/dist/semantic.min.css">
+  </head>
+  <style media="screen" type="text/css">
+    .comment li {
+      list-style: none;
+      padding: 5px;
+    }
+    .comment li:nth-last-child(odd) {
+      background-color: #cdd4cb;
+    }
+  </style>
+  <body>
+    <div class="ui container"  style="margin-top: 6em; width: 30%;">
+      <% if(error && error.length > 0) { %>
+        <div class="ui negative message">
+          <i class="close icon"></i>
+          <div class="header">
+            <%= error %>
+          </div>
+        </div>
+      <% } %>
+      <% if(success && success.length > 0) { %>
+        <div class="ui info message">
+          <i class="close icon"></i>
+          <div class="header">
+            <%= success %>
+          </div>
+        </div>
+      <% } %>
+      <div class="column">
+    <h2 class="ui teal aligned center header">
+      <div class="content">
+        Log-in to your account
+      </div>
+    </h2>
+    <form class="ui large form" action="/login" method="POST">
+      <div class="ui stacked segment">
+        <div class="field">
+          <div class="ui left icon input">
+            <i class="user icon"></i>
+            <input type="text" name="username" placeholder="Username">
+          </div>
+        </div>
+        <div class="field">
+          <div class="ui left icon input">
+            <i class="lock icon"></i>
+            <input type="password" name="password" placeholder="Password">
+          </div>
+        </div>
+        <button type="submit" class="ui fluid large teal submit button">Login</button>
+      </div>
+
+      <div class="ui error message"></div>
+
+    </form>
+
+    <div class="ui message">
+      New to us? <a href="/register">Sign Up</a>
+    </div>
+  </div>
+    </div>
+
+    <script src="/jquery/dist/jquery.min.js"></script>
+    <script src="/semantic-ui/dist/semantic.min.js"></script>
+    <script type="text/javascript">
+      $(document).ready(function() {
+        $('.message .close')
+          .on('click', function() {
+            $(this)
+              .closest('.message')
+              .transition('fade');
+          });
+      });
+    </script>
+  </body>
+</html>

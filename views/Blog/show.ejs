@@ -1,0 +1,55 @@
+<% include ../partials/header %>
+  <div class="ui grid">
+    <div class="two wide column"></div>
+    <div class="ui card twelve wide column">
+      <div class="content">
+        <div class="header">
+          <%= blog.title %> <a href="/" class="ui inverted green button right floated">Back</a></div>
+      </div>
+      <div class="content">
+        <div class="ui segment">
+          <img class="ui centered image" src="<%= blog.image %>" width="900" height="400">
+          <br>
+          <hr>
+          <div>
+          <span><i class="time icon"></i><strong><%= blog.created.toDateString() %></strong></span><i class="user icon"></i><%= blog.author.username %>
+          </div>
+          <br><br>
+          <p>
+            <%= blog.body %>
+          </p>
+          <% if(currentUser && currentUser._id.equals(blog.author.id)) { %>
+          <a class="ui inverted orange button" href="/blog/edit-post/<%= blog.id %>">Edit</a>
+          <a class="ui inverted red button" href="/blog/delete-post/<%= blog.id %>">Delete</a>
+          <% } %>
+        </div>
+        <br>
+      </div>
+
+      <div class="content">
+        <div class="ui segment">
+          <div>
+            <h3>Comment post <a href="/blog/post-detail/<%= blog.id %>/comment/add" class="ui inverted blue button right floated">Add New Comment</a></h3>
+          </div>
+        <div style="margin-top: 30px">
+          <ul class="comment">
+            <% blog.comments.forEach(function(data) { %>
+              <li>
+                <b><%= data.author.username %></b> <span class="right floated"><%= data.created.toDateString() %></span>
+                <p><%= data.text %></p>
+                <% if(currentUser && currentUser._id.equals(data.author.id)) { %>
+                <span>
+                  <a href="/blog/post-detail/<%= blog.id %>/comment/<%= data.id %>/edit" class="mini ui button orange  inverted">edit</a>
+                  <a href="/blog/post-detail/<%= blog.id %>/comment/<%= data.id %>" class="mini ui button red  inverted">delete</a>
+                </span>
+                <%}%>
+              </li>
+            <% }) %>
+          </ul>
+        </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+      <% include ../partials/footer %>

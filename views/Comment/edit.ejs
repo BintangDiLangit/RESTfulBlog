@@ -1,0 +1,26 @@
+<% include ../partials/header %>
+
+<div class="ui grid">
+  <div class="three wide column"></div>
+    <div class="ui card ten wide column">
+      <div class="content">
+        <div class="header">Edit Comment</div>
+      </div>
+      <div class="content">
+        <form class="ui form" action="/blog/post-detail/<%= post_id %>/comment/<%= comment._id %>" method="post">
+          <div class="field">
+            <label>Author</label>
+            <input name="author" placeholder="Author" type="text" readonly="" value="<%= currentUser.username %>">
+          </div>
+          <div class="field">
+              <label for="">Text</label>
+              <textarea name="text" rows="3"><%= comment.text %></textarea>
+          </div>
+          </div>
+          <button class="ui inverted orange button" type="submit">Update</button>
+        </form>
+      </div>
+  </div>
+</div>
+
+<% include ../partials/footer %>

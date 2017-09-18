@@ -1,8 +1,23 @@
 var express = require('express'),
     bodyParser = require('body-parser'),
     mongoose = require('mongoose'),
-    expressSanitizer = require('express-sanitizer');
+    expressSanitizer = require('express-sanitizer'),
+    passport = require('passport'),
+    LocalStrategy = require('passport-local'),
+    passportLocalMongoose = require('passport-local-mongoose'),
+    flash = require('connect-flash'),
+    cookieParser = require('cookie-parser'),
+    session = require('express-session'),
+    Blog = require('./models/blog'),
+    Comment = require('./models/comment');
+    User = require('./models/user');
+    SeedDB = require('./seeds');
     app = express();
+
+// import routes
+var indexRoutes = require('./routes/index'),
+    postRoutes = require('./routes/post'),
+    commentRoutes = require('./routes/comment');
 
 // connection
 mongoose.connect("mongodb://localhost/RESTfulBlog", {
@@ -13,109 +28,35 @@ app.use(express.static("node_modules"));
 app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(expressSanitizer());
-// schema
-var blogSchema = new mongoose.Schema({
-  title: String,
-  image: String,
-  body: String,
-  created: {type: Date, default: Date.now}
-});
-// model
-var Blog = mongoose.model("Blog", blogSchema);
+// Setting for auth
+app.use(require('express-session')({
+  secret: 'secret password',
+  resave: false,
+  saveUninitialized: false
+}));
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use(new LocalStrategy(User.authenticate()));
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
 
-// Restful Routes
-app.get('/', function(req, res) {
-  Blog.find({}, function(err, data) {
-      if (err) {
-        console.log(err);
-      }else{
-        res.render('index', {blog: data})
-      }
-  });
-});
+// Flash message
+app.use(cookieParser('secret'));
+// app.use(session({cookie: { maxAge: 60000 }}));
+app.use(flash());
 
-// get all post
-app.get('/new-post', function(req, res) {
-  res.render('create');
-});
+// mendaftarkan variable secara global
+app.use(function(req, res, next) {
+  res.locals.currentUser = req.user;
+  res.locals.error = req.flash("error");
+  res.locals.success = req.flash("success");
 
-// create new post
-app.post('/new-post', function(req, res) {
-  var title = req.sanitize(req.body.title);
-  var image = req.sanitize(req.body.image);
-  var body = req.sanitize(req.body.body);
-  var data = {
-      title: title,
-      image: image,
-      body: body
-  };
-  // console.log(data);
-  // req.sanitize(data.body);
-  // console.log(data);
-  Blog.create(data, function(err, data) {
-    if (err) {
-      console.log(err)
-    }else{
-      // console.log(data);
-      res.redirect('/');
-    }
-  });
+  next();
 });
 
-// show post
-app.get('/post-detail/:id', function(req,res) {
-  var id = req.params.id;
-  // console.log(id);
-  Blog.findOne({_id: id}, function(err, data) {
-    if (err) {
-      console.log(err);
-    }else{
-      // console.log(data);
-      res.render('show', {blog: data});
-    }
-  });
-});
-
-// get Edit
-app.get('/edit-post/:id', function(req,res) {
-  var id = req.params.id;
-  Blog.findOne({_id: id}, function(err, data) {
-    if (err) {
-      console.log(err);
-    }else{
-      res.render('edit', {blog: data});
-    }
-  });
-});
-
-// update date
-app.post('/edit-post/:id/update', function(req,res) {
-  var id = req.params.id;
-  var title = req.body.title;
-  var image = req.body.image;
-  var body = req.body.body;
-  Blog.findByIdAndUpdate(id, {title: title, image: image, body: body}, function(err, data) {
-    if (err) {
-      console.log(err);
-    }else{
-      // console.log(data);
-      res.redirect('/post-detail/' + req.params.id);
-    }
-  });
-});
-
-// delete data
-app.get('/delete-post/:id', function(req,res) {
-  var id = req.params.id;
-  Blog.deleteOne(id, function(err) {
-    if (err) {
-      console.log(err);
-    }else{
-      res.redirect('/');
-    }
-  })
-});
-
+app.use('/', indexRoutes);
+app.use('/blog/', postRoutes);
+app.use('/blog/post-detail/:id/comment', commentRoutes);
 
 
 // listen port
