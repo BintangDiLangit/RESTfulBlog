@@ -12,7 +12,6 @@ var express = require('express'),
     Comment = require('./models/comment'),
     User = require('./models/user'),
     SeedDB = require('./seeds'),
-
     app = express();
 
 // import routes
@@ -30,30 +29,11 @@ app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(expressSanitizer());
 // Setting for auth
-// app.use(require('express-session')({
-//   secret: 'secret password',
-//   resave: false,
-//   saveUninitialized: false
-// }));
-
-app.use(session({
-cookie:{
-    secure: true,
-    maxAge:60000
-       },
-store: new RedisStore(),
-secret: 'secret',
-saveUninitialized: true,
-resave: false
+app.use(require('express-session')({
+  secret: 'secret password',
+  resave: false,
+  saveUninitialized: false
 }));
-
-app.use(function(req,res,next){
-if(!req.session){
-    return next(new Error('Oh no')) //handle error
-}
-next() //otherwise continue
-});
-
 app.use(passport.initialize());
 app.use(passport.session());
 passport.use(new LocalStrategy(User.authenticate()));
