@@ -9,9 +9,10 @@ var express = require('express'),
     cookieParser = require('cookie-parser'),
     session = require('express-session'),
     Blog = require('./models/blog'),
-    Comment = require('./models/comment');
-    User = require('./models/user');
-    SeedDB = require('./seeds');
+    Comment = require('./models/comment'),
+    User = require('./models/user'),
+    SeedDB = require('./seeds'),
+
     app = express();
 
 // import routes
