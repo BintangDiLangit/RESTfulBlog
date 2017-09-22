@@ -19,10 +19,13 @@ var indexRoutes = require('./routes/index'),
     postRoutes = require('./routes/post'),
     commentRoutes = require('./routes/comment');
 
-// connection
-mongoose.connect("mongodb://localhost/RESTfulBlog", {
-  useMongoClient: true
-});
+// connection localhost
+// mongoose.connect("mongodb://localhost/RESTfulBlog", {
+//   useMongoClient: true
+// });
+// conection on mongolab
+mongoose.connect("mongodb://bangadam:bangadam@ds147044.mlab.com:47044/restfulblog")
+
 // setting
 app.use(express.static("node_modules"));
 app.set("view engine", "ejs");
